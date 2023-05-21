@@ -1,24 +1,24 @@
 package com.example.seabattle.models;
 
-import javax.persistence.*;
-import java.util.List;
+import jakarta.persistence.*;
+import java.util.Set;
 
 @Entity
-@Table(name="games")
+@Table(name="game")
 public class GameModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private long id;
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "is_game_with_friend")
-    private Boolean isGameWithFriend;
+    private boolean isGameWithFriend;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "game")
-    private List<BoardModel> boardModels;
+    @OneToMany(mappedBy="game", cascade = CascadeType.ALL)
+    private Set<BoardModel> boardModels;
 
     @Column(name = "game_state")
     private String gameState;
@@ -55,11 +55,11 @@ public class GameModel {
         this.id = id;
     }
 
-    public List<BoardModel> getBoardModels() {
+    public Set<BoardModel> getBoardModels() {
         return boardModels;
     }
 
-    public void setBoardModels(List<BoardModel> boardModels) {
+    public void setBoardModels(Set<BoardModel> boardModels) {
         this.boardModels = boardModels;
     }
 

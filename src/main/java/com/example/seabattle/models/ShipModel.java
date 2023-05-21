@@ -1,14 +1,15 @@
 package com.example.seabattle.models;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+
 
 @Entity
-@Table(name="shipes")
+@Table(name="ship")
 public class ShipModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private Long id;
+    private long id;
 
     @Column(name = "name")
     private String name;
@@ -20,7 +21,7 @@ public class ShipModel {
     private int hits;
 
     @ManyToOne
-    @JoinColumn(name = "board_id")
+    @JoinColumn(name = "board_id", nullable=false)
     private BoardModel board;
 
     public ShipModel(String name, int size) {
