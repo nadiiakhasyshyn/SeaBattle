@@ -1,7 +1,7 @@
 package com.example.seabattle.models;
 
-import javax.persistence.*;
-import java.util.List;
+import jakarta.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name="board")
@@ -9,26 +9,25 @@ public class BoardModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private long id;
 
     @Column(name = "board_size")
-    private Integer boardSize;
+    private int boardSize;
 
     @ManyToOne
-    @JoinColumn(name = "game_id")
+    @JoinColumn(name="game_id", nullable=false)
     private GameModel game;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "board_id")
-    private List<ShipModel> boardList;
+    @OneToMany(mappedBy="board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ShipModel> shipList;
 
     public BoardModel() {
         // Конструктор за замовчуванням
     }
 
-    public BoardModel(int boardSize, List<ShipModel> boardList) {
+    public BoardModel(int boardSize, Set<ShipModel> shipList) {
         this.boardSize = boardSize;
-        this.boardList = boardList;
+        this.shipList = shipList;
     }
 
     public Long getId() {
@@ -47,12 +46,12 @@ public class BoardModel {
         this.boardSize = boardSize;
     }
 
-    public List<ShipModel> getBoardList() {
-        return boardList;
+    public Set<ShipModel> getBoardList() {
+        return shipList;
     }
 
-    public void setBoardList(List<ShipModel> boardList) {
-        this.boardList = boardList;
+    public void setBoardList(Set<ShipModel> shipList) {
+        this.shipList = shipList;
     }
 
 }
