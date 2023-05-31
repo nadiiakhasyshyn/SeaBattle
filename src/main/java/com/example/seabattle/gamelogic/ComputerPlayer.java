@@ -1,8 +1,11 @@
 package com.example.seabattle.gamelogic;
 
+import com.example.seabattle.models.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class ComputerPlayer {
     private static final int GRID_SIZE = 10;
@@ -50,26 +53,22 @@ public class ComputerPlayer {
             }
 
             if (!validTargets.isEmpty()) {
-                // Якщо є влучання у вертикальному стовпці або горизонтальному рядку,
-                // вибираємо наступну клітинку поруч з останнім влучанням
+
                 int[] randomTarget = validTargets.get(random.nextInt(validTargets.size()));
                 row = randomTarget[0];
                 column = randomTarget[1];
             } else {
-                // Якщо немає влучань у вертикальному стовпці або горизонтальному рядку,
-                // вибираємо клітинку поруч з останньою влученою ціллю
+
                 boolean verticalDirection = random.nextBoolean();
                 int direction = random.nextBoolean() ? -1 : 1;
 
                 if (verticalDirection) {
                     // Вибираємо клітинку на тому ж стовпці
                     row += direction;
-                } else {column += direction;
-
+                } else {
+                    column += direction;
                 }
             }
-            // Виконуємо постріл на вибрану клітинку
-            shoot(row, column);
         }
 
         // Виконуємо постріл на вибрану клітинку
@@ -77,11 +76,79 @@ public class ComputerPlayer {
     }
 
     private void shoot(int row, int column) {
-        // Логіка пострілу на задану клітинку
+        int[] target = {row, column};
+        targets.add(target);
+    }
 
-        // Додаткова логіка для визначення влучання і оновлення активних цілей
+    public void placeShips(Set<ShipModel> ships) {
+        for (ShipModel ship : ships) {
+            boolean shipPlaced = false;
 
-        // Додамо влучану клітинку до активних цілей
-        targets.add(new int[]{row, column});
+            while (!shipPlaced) {
+                int row = random.nextInt(GRID_SIZE);
+                int column = random.nextInt(GRID_SIZE);
+                boolean vertical = random.nextBoolean();
+
+                if (canPlaceShip(ship, row, column, vertical)) {
+                    placeShip(ship, row, column, vertical);
+                    shipPlaced = true;
+                }
+            }
+        }
+    }
+
+    private boolean canPlaceShip(ShipModel ship, int row, int column, boolean vertical) {
+        int size = ship.getSize();
+
+        if (vertical) {
+            if (row + size > GRID_SIZE) {
+                return false;
+            }
+
+            for (int i = row; i < row + size; i++) {
+                if (!isCellFree(i, column)) {
+                    return false;
+                }
+            }
+        } else {
+            if (column + size > GRID_SIZE) {
+                return false;
+            }
+
+            for (int j = column; j < column + size; j++) {
+
+                if (!isCellFree(row, j)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private void placeShip(ShipModel ship, int row, int column, boolean vertical) {
+        int size = ship.getSize();
+        Set<CellModel> cells = ship.getCells();
+
+        if (vertical) {
+            for (int i = row; i < row + size; i++) {
+                // Позначаємо клітинку (i, column) як частину корабля
+                CellModel cell = new CellModel(i, column);
+                cell.setShip(ship);
+                cells.add(cell);
+            }
+        } else {
+            for (int j = column; j < column + size; j++) {
+
+                CellModel cell = new CellModel(row, j);
+                cell.setShip(ship);
+                cells.add(cell);
+            }
+        }
+    }
+
+    private boolean isCellFree(int row, int column) {
+
+        return true;
     }
 }

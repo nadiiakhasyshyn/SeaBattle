@@ -2,6 +2,8 @@ package com.example.seabattle.models;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 
 @Entity
 @Table(name="ship")
@@ -23,11 +25,21 @@ public class ShipModel {
     @ManyToOne
     @JoinColumn(name = "board_id", nullable=false)
     private BoardModel board;
+    @OneToMany(mappedBy="ship", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CellModel> cells;
 
-    public ShipModel(String name, int size) {
+    @Column(name = "isVertical")
+    boolean isVertical;
+
+    @Column(name = "dragCount")
+    int dragCount;
+
+    public ShipModel(String name, int size, Set<CellModel> cells, int dragCount) {
         this.name = name;
         this.size = size;
         this.hits = 0;
+        this.cells = cells;
+        this.dragCount = dragCount;
     }
 
     public ShipModel() {
@@ -54,6 +66,14 @@ public class ShipModel {
         this.size = size;
     }
 
+    public Set<CellModel> getCells() {
+        return cells;
+    }
+
+    public void setCells(Set<CellModel> cells) {
+        this.cells = cells;
+    }
+
     public int getHits() {
         return hits;
     }
@@ -68,6 +88,22 @@ public class ShipModel {
 
     public void setBoard(BoardModel board) {
         this.board = board;
+    }
+
+    public boolean isVertical() {
+        return isVertical;
+    }
+
+    public void setVertical(boolean vertical) {
+        isVertical = vertical;
+    }
+
+    public int getDragCount() {
+        return dragCount;
+    }
+
+    public void setDragCount(int dragCount) {
+        this.dragCount = dragCount;
     }
 
     // Метод, який перевіряє, чи затоплений корабель

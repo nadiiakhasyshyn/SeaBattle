@@ -14,8 +14,8 @@ public class BoardModel {
     @Column(name = "board_size")
     private int boardSize;
 
-    @ManyToOne
-    @JoinColumn(name="game_id", nullable=false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "game_id", referencedColumnName = "id", nullable = false)
     private GameModel game;
 
     @OneToMany(mappedBy="board", cascade = CascadeType.ALL, orphanRemoval = true)

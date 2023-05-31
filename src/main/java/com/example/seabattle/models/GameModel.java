@@ -17,7 +17,7 @@ public class GameModel {
     @Column(name = "is_game_with_friend")
     private boolean isGameWithFriend;
 
-    @OneToMany(mappedBy="game", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "game", cascade = {CascadeType.MERGE},fetch = FetchType.LAZY)
     private Set<BoardModel> boardModels;
 
     @Column(name = "game_state")
