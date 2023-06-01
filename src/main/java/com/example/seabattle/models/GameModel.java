@@ -14,8 +14,9 @@ public class GameModel {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "is_game_with_friend")
-    private boolean isGameWithFriend;
+
+    @Column(name = "player_name")
+    private String playerName;
 
     @OneToMany(mappedBy = "game", cascade = {CascadeType.MERGE},fetch = FetchType.LAZY)
     private Set<BoardModel> boardModels;
@@ -39,12 +40,12 @@ public class GameModel {
         this.name = name;
     }
 
-    public boolean isGameWithFriend() {
-        return isGameWithFriend;
+    public String getPlayerName() {
+        return playerName;
     }
 
-    public void setGameWithFriend(boolean gameWithFriend) {
-        isGameWithFriend = gameWithFriend;
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
     }
 
     public Long getId() {

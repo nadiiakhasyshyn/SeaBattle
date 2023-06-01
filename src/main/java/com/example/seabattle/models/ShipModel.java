@@ -9,7 +9,7 @@ import java.util.Set;
 @Table(name="ship")
 public class ShipModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
@@ -22,8 +22,8 @@ public class ShipModel {
     @Column(name = "hits")
     private int hits;
 
-    @ManyToOne
-    @JoinColumn(name = "board_id", nullable=false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "board_id",  referencedColumnName = "id", nullable=false)
     private BoardModel board;
     @OneToMany(mappedBy="ship", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CellModel> cells;
@@ -46,8 +46,12 @@ public class ShipModel {
 
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -9,13 +9,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ShipApiModel {
         @JsonProperty("id")
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        private int id;
+        private long id;
         @JsonProperty("name")
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        private String type;
+        private String name;
         @JsonProperty("size")
         @JsonInclude(JsonInclude.Include.NON_NULL)
-        private String brand;
+        private int size;
         @JsonProperty("hits")
         @JsonInclude(JsonInclude.Include.NON_NULL)
         private int hits;
@@ -29,5 +29,61 @@ public class ShipApiModel {
         private int dragCount;
         public ShipApiModel(){
 
+        }
+
+        public long getId() {
+                return id;
+        }
+
+        public void setId(long id) {
+                this.id = id;
+        }
+
+        public String getName() {
+                return name;
+        }
+
+        public void setName(String name) {
+                this.name = name;
+        }
+
+        public int getSize() {
+                return size;
+        }
+
+        public void setSize(int size) {
+                this.size = size;
+        }
+
+        public int getHits() {
+                return hits;
+        }
+
+        public void setHits(int hits) {
+                this.hits = hits;
+        }
+
+        public long getBoardId() {
+                return boardId;
+        }
+
+        public void setBoardId(long boardId) {
+                this.boardId = boardId;
+        }
+
+        public boolean isVertical() {
+                return isVertical;
+        }
+
+        public void setVertical(boolean vertical) {
+                isVertical = vertical;
+        }
+
+        public int getDragCount() {
+                return dragCount;
+        }
+
+        public void setDragCount(int dragCount) {
+                this.dragCount = dragCount;
         }
 }

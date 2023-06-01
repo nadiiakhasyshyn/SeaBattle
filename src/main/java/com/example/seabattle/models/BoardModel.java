@@ -54,4 +54,12 @@ public class BoardModel {
         this.shipList = shipList;
     }
 
+    public GameModel getGame() {
+        return game;
+    }
+
+    public void setGame(GameModel game) {
+        this.game = game;
+    }
+
 }

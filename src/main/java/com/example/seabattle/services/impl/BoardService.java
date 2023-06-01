@@ -2,44 +2,84 @@ package com.example.seabattle.services.impl;
 
 import com.example.seabattle.api.models.BoardApiModel;
 import com.example.seabattle.models.BoardModel;
+import com.example.seabattle.models.GameModel;
 import com.example.seabattle.repositories.IBoardRepository;
+import com.example.seabattle.services.IBoardService;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import com.github.dozermapper.core.Mapper;
 
 @Service
-@Transactional
-public class BoardService {
-    private final IBoardRepository boardRepository;
+public class BoardService implements IBoardService {
+    private final IBoardRepository _repository;
+
     private final Mapper _mapper;
-    @Autowired
+
     public BoardService(IBoardRepository boardRepository) {
-        this.boardRepository = boardRepository;
+        super();
+        this._repository = boardRepository;
         _mapper = DozerBeanMapperBuilder.buildDefault();
     }
 
-    public BoardApiModel createBoard(BoardApiModel board) {
-        BoardModel result = _mapper.map(board, BoardModel.class);
-        boardRepository.save(result);
-        return _mapper.map(result, BoardApiModel.class);
+    private BoardApiModel convertToBoardApiModel(BoardModel model) {
+        if (model != null) {
+            var newBoard = _mapper.map(model, BoardApiModel.class);
+            newBoard.setGameId(model.getGame().getId());
+            return newBoard;
+        }
+        return null;
     }
 
-    public BoardApiModel GetById(long id) {
-        BoardModel result = boardRepository.findById(id);
-        if(result.isEmpty()) return null;
-        return _mapper.map(result.get(), BoardApiModel.class);
+    @Override
+    public List<BoardApiModel> getAll() {
+        List<BoardModel> boards = _repository.findAll();
+        List<BoardApiModel> result = new ArrayList<>();
+        for (BoardModel b : boards) {
+            result.add(convertToBoardApiModel(b));
+        }
+        return result;
     }
 
-
-    public List<BoardModel> getAllBoards() {
-        return boardRepository.findAll();
+    @Override
+    public BoardApiModel getById(long id) {
+        var result = _repository.findById(id);
+        return convertToBoardApiModel(result.orElse(null));
     }
 
+    @Override
+    public BoardApiModel create(BoardApiModel entity) {
+        BoardModel model = _mapper.map(entity, BoardModel.class);
+        var newGame = new GameModel();
+        newGame.setId(entity.getGameId());
+        model.setGame(newGame);
+        BoardModel result = _repository.save(model);
+        return convertToBoardApiModel(result);
+    }
 
-    // Додаткові методи, якщо потрібно
+    @Override
+    public BoardApiModel update(BoardApiModel entity) {
+        Optional<BoardModel> existingModel = _repository.findById(entity.getId());
+        BoardModel resultModel = null;
+        if (existingModel.isPresent()) {
+            resultModel = existingModel.get();
+            resultModel.setBoardSize(entity.getBoardSize());
+            _repository.save(resultModel);
+        }
+        return convertToBoardApiModel(resultModel);
+    }
 
+    @Override
+    public BoardApiModel delete(long id) {
+        Optional<BoardModel> model = _repository.findById(id);
+        if (model.isPresent()) {
+            _repository.deleteById(id);
+            return convertToBoardApiModel(model.get());
+        }
+        return null;
+    }
 }
