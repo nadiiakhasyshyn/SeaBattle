@@ -5,15 +5,16 @@ import jakarta.persistence.*;
 @Entity
 @Table(name="cells")
 public class CellModel {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private long id;
     @Column(name = "x")
     private int x;
     @Column(name = "y")
     private int y;
-
-    @ManyToOne
-    @Id
-    @JoinColumn(name = "ship_id", nullable=false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ship_id", referencedColumnName = "id", nullable = false)
     private ShipModel ship;
 
 
@@ -24,6 +25,14 @@ public class CellModel {
 
     public CellModel() {
 
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public int getX() {
@@ -49,7 +58,6 @@ public class CellModel {
     public void setShip(ShipModel ship) {
         this.ship = ship;
     }
-
 }
 
 

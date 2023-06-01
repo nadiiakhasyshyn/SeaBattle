@@ -1,49 +1,51 @@
 package com.example.seabattle.controllers;
 
-import com.example.seabattle.models.ShipModel;
-import com.example.seabattle.repositories.IShipRepository;
+import com.example.seabattle.api.models.ShipApiModel;
+import com.example.seabattle.services.IShipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/api/ship")
 public class ShipController {
-    private final IShipRepository shipRepository;
+    private final IShipService shipService;
 
     @Autowired
-    public ShipController(IShipRepository shipRepository) {
-        this.shipRepository = shipRepository;
+    public ShipController(IShipService shipService) {
+        this.shipService = shipService;
     }
 
     @PostMapping
-    public ResponseEntity<ShipModel> createShip(@RequestBody ShipModel ship) {
-        ShipModel createdShip = shipRepository.save(ship);
-        return new ResponseEntity<>(createdShip, HttpStatus.CREATED);
+    public ResponseEntity<ShipApiModel> createShip(@RequestBody ShipApiModel ship) {
+        ShipApiModel shipModel = shipService.create(ship);
+        return ResponseEntity.status(HttpStatus.CREATED).body(shipModel);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ShipApiModel>> getAllShips() {
+        List<ShipApiModel> ships = shipService.getAll();
+        return ResponseEntity.ok(ships);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ShipModel> getShip(@PathVariable("id") long id) {
-        ShipModel ship = shipRepository.findById(id).orElse(null);
+    public ResponseEntity<ShipApiModel> getShipById(@PathVariable("id") long id) {
+        ShipApiModel ship = shipService.getById(id);
         if (ship != null) {
-            return new ResponseEntity<>(ship, HttpStatus.OK);
+            return ResponseEntity.ok(ship);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ShipModel> updateShip(@PathVariable("id") long id, @RequestBody ShipModel ship) {
-        ShipModel existingShip = shipRepository.findById(id).orElse(null);
-        if (existingShip != null) {
-            existingShip.setName(ship.getName());
-            existingShip.setSize(ship.getSize());
-            existingShip.setHits(ship.getHits());
-            existingShip.setBoard(ship.getBoard());
-
-            ShipModel updatedShip = shipRepository.save(existingShip);
+    @PutMapping()
+    public ResponseEntity<ShipApiModel> updateShip(@RequestBody ShipApiModel ship) {
+        ShipApiModel updatedShip = shipService.update(ship);
+        if (updatedShip != null) {
             return new ResponseEntity<>(updatedShip, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -51,11 +53,10 @@ public class ShipController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteShip(@PathVariable("id") long id) {
-        ShipModel ship = shipRepository.findById(id).orElse(null);
+    public ResponseEntity<ShipApiModel> deleteShip(@PathVariable("id") long id) {
+        ShipApiModel ship = shipService.delete(id);
         if (ship != null) {
-            shipRepository.delete(ship);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(ship, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

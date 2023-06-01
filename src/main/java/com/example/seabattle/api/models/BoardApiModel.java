@@ -17,6 +17,39 @@ public class BoardApiModel {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private long gameId;
 
+    @Override
+    public String toString() {
+        return "BoardApiModel{" +
+                "id=" + id +
+                ", boardSize=" + boardSize +
+                ", gameId=" + gameId +
+                '}';
+    }
+
+    public long getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(long gameId) {
+        this.gameId = gameId;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getBoardSize() {
+        return boardSize;
+    }
+
+    public void setBoardSize(int boardSize) {
+        this.boardSize = boardSize;
+    }
+
     public BoardApiModel(){
 
     }
