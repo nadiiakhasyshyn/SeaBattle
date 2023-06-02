@@ -6,6 +6,7 @@ data "aws_iam_policy_document" "allow-public-read-policy-document" {
     }
     actions = [
       "s3:GetObject",
+      "s3:PutObject",
     ]
     resources = [
       "${aws_s3_bucket.frontend-bucket.arn}/*"
