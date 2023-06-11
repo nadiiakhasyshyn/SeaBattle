@@ -63,6 +63,6 @@ resource "aws_s3_bucket_acl" "frontend-bucket-acl" {
 }
 
 resource "aws_s3_bucket" "frontend-bucket" {
-  bucket = var.frontend-bucket_name
+  bucket        = var.frontend-bucket_name
   force_destroy = true
 }
